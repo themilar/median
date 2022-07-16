@@ -1,12 +1,22 @@
 import email
 from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class ArticleBase(BaseModel):
     title: str
-    body: Optional[str]
+    body: Optional[str] = None
+
+    class Config:
+        orm_mode = True
+
+
+class UserBase(BaseModel):
+    email: EmailStr
+
+    class Config:
+        orm_mode = True
 
 
 class ArticleCreate(ArticleBase):
@@ -16,6 +26,7 @@ class ArticleCreate(ArticleBase):
 class Article(ArticleBase):
     id: int
     author_id: int
+    author: UserBase
     created_at: datetime
     updated_at: Optional[datetime]
 
@@ -29,10 +40,6 @@ class ArticleUpdate(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class UserBase(BaseModel):
-    email: EmailStr
 
 
 class UserCreate(UserBase):
